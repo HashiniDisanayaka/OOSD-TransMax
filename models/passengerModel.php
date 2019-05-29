@@ -3,6 +3,7 @@ class PassengerModel extends Model{
 
     //Singleton
     public $balanceRes;
+    public $resultArray;
     private static $_passengerModel;
     public static function getModelInstance(){
         if(self::$_passengerModel !== null){
@@ -133,6 +134,43 @@ class PassengerModel extends Model{
         $newbalance = $balance + $post['amount'];
         $this->bind(':newbalance',$newbalance);
         $this->execute();
+    }
+
+    public function bookseat(){
+        if (!($_SESSION['is_logged_in'])){
+            Messages::setMessage('Sign-in first.','error');
+            header('Location: '.ROOT_URL.'passenger/signin');  
+        }
+        else{
+            $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            if($post['submit']){
+                //print_r($post['start']);
+                //print_r($post['destination']);
+                $start = $post['start'];
+                $destination = $post['destination'];
+                $this->query('SELECT * FROM busreg WHERE (startpoint = :startpoint) AND (destination = :destination)');
+                $this->bind(':startpoint',$start);
+                $this->bind(':destination',$destination);
+                $this->resultArray = $this->resultSet();
+                //print_r($this->resultArray);
+            }
+        }
+    }
+
+    public function bookseatfinal(){
+        if (!($_SESSION['is_logged_in'])){
+            Messages::setMessage('Sign-in first.','error');
+            header('Location: '.ROOT_URL.'passenger/signin');  
+        }
+        else{
+            $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            if($post['submit']){
+                $this->query('SELECT * FROM busreg WHERE id = :id');
+                
+
+            }
+    
+        }
     }
 
 
